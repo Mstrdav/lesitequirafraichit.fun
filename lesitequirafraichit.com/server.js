@@ -145,5 +145,5 @@ server.get('',function(req,res){
     res.status(404).send('Too far for us :/');
 });
 
-server.listen(8080);
-console.info('Server started on port 8080\n');
+server.listen(80);
+console.info('Server started on port 80\n');
