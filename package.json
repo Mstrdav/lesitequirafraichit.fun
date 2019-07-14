@@ -2,7 +2,7 @@
   "name": "lesitequirafraichit",
   "version": "1.0.0",
   "description": "Un site qui rafraichit",
-  "main": "lesitequirafraichit.com/server.js",
+  "main": "server.js",
   "dependencies": {
     "body-parser": "^1.19.0",
     "colors": "^1.3.3",

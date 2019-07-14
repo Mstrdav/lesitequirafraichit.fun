@@ -25,6 +25,8 @@ var favicon = require('serve-favicon');
 var date = new Date();
 
 // VARIABLES //
+var port = 8080;
+//var port = process.env.PORT;
 var msg_device, msg1_chaud, msg1_froid, msg2, msg3, msg4, msg5;
 msg1_chaud = "C'est chaud. ";
 msg1_froid = "Ce n'est pas chaud, continuez votre misérable vie.";
@@ -78,9 +80,9 @@ server.get('',function(req,res){
    
         resp.on('end', () => {
             
-            if(parseInt(JSON.parse(data).cod) == 200) {
-                console.log('CODE : ' + JSON.parse(data).cod.toString().green);
-                console.log('TEMP : ' + JSON.parse(data).main.temp);
+            if(parseInt(JSON.parse(data).cod) == 200 && ipInfo.city!=undefined) {
+                console.log('CODE : '.yellow + JSON.parse(data).cod.toString().green);
+                console.log('TEMP : '.yellow + JSON.parse(data).main.temp);
             
                 var meteo = parseFloat(JSON.parse(data).main.temp)-273.5;
                 meteo = Math.round(meteo*10)/10;
@@ -103,7 +105,7 @@ server.get('',function(req,res){
                     msg_device = "Faîtes glisser vers le bas pour rafraîchir."
                 }
             
-                var ville = JSON.parse(data).name;
+                var ville = 'A '+ JSON.parse(data).name+'.';
                 
                 if(req.session.time==1) {
                     if(meteo>=25) {
@@ -111,27 +113,75 @@ server.get('',function(req,res){
                     } else {
                         var premierMsg = msg1_froid;
                         msg_device = "";
-                        console. log(">>> Destroying session of " + req.session.name.red + "... (cause: 'trop froid')");
+                        console. log(">>> Destroying session of ".red + req.session.name.yellow + "... (cause: 'trop froid')\n".red);
                         req.session = null;
                     }
                 } else if(req.session.time<5) {
                     var premierMsg = msg[req.session.time-1];
                 } else {
                     var premierMsg = msg5;
-                    console. log(">>> Destroying session of " + req.session.name.red + "... (cause: '5eme reload')");
+                    console. log(">>> Destroying session of ".red + req.session.name.yellow + "... (cause: '5eme reload')\n".red);
                     req.session = null;
                 }
             
                 res.render('index.ejs',{weather:meteo, town:ville, rouge:red, bleu:blue, vert:green, string1:premierMsg, string2:msg_device});
                
             } else {
-                console.log('CODE : ' + parseInt(JSON.parse(data).cod).toString().red);
-                console.info(JSON.parse(data));
-                res.setHeader('Content-Type','texxt/plain');
-                res.status(404).send('Too far for us :/');
-            }
+                console.log('Imposible de localiser précisément '.red + req.session.name.yellow);
+                http.get('http://api.openweathermap.org/data/2.5/weather?q='+ undefined +',fr&appid=36c2a73dd80e36cc1c36eab251bbf29e', (resp) => {
+                    let data ='';
+   
+                    resp.on('data', (chunk) => {
+                        data += chunk; 
+                    }); 
+   
+                    resp.on('end', () => {
             
-            console.log('\n');
+                        console.log('CODE : '.yellow + JSON.parse(data).cod.toString().green);
+                        console.log('TEMP : '.yellow + JSON.parse(data).main.temp);
+            
+                        var meteo = parseFloat(JSON.parse(data).main.temp)-273.5;
+                        meteo = Math.round(meteo*10)/10;
+                
+                        var red = meteo/40*240 + 15;
+                        var blue = 255-red;
+                        if(meteo>25) {
+                            var green = 55;
+                        } else {
+                            var green = 75;
+                        }
+                
+                        // Adaptation du message en fonction du devicee du client
+                        if(req.device.type == 'desktop') {
+                            msg_device = "Appuyez sur F5 pour rafraîchir."
+                        } else {
+                            msg_device = "Faîtes glisser vers le bas pour rafraîchir."
+                        }
+                        
+                        var ville = 'En France.';
+                
+                        if(req.session.time==1) {
+                            if(meteo>=25) {
+                                var premierMsg = msg1_chaud;
+                            } else {
+                                var premierMsg = msg1_froid;
+                                msg_device = "";
+                                console. log(">>> Destroying session of ".red + req.session.name.yellow + "... (cause: 'trop froid')\n".red);
+                                req.session = null;
+                            }
+                        } else if(req.session.time<5) {
+                            var premierMsg = msg[req.session.time-1];
+                        } else {
+                            var premierMsg = msg5;
+                            console. log(">>> Destroying session of ".red + req.session.name.yellow + "... (cause: '5eme reload')\n".red);
+                            req.session = null;
+                        }
+            
+                        res.render('index.ejs',{weather:meteo, town:ville, rouge:red, bleu:blue, vert:green, string1:premierMsg, string2:msg_device});
+                    });
+                });
+            }
+            //console.log('\n');
         });
     }).on('error', (err) => {
         console.log("ERROR: " + err.message);
@@ -145,5 +195,5 @@ server.get('',function(req,res){
     res.status(404).send('Too far for us :/');
 });
 
-server.listen(process.env.PORT);
-console.info('Server started on port '+process.env.PORT+'\n');
+server.listen(port);
+console.info('Server started on port '+port+'\n');
