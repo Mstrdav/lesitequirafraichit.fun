@@ -25,8 +25,8 @@ var favicon = require('serve-favicon');
 var date = new Date();
 
 // VARIABLES //
-var port = 8080;
-//var port = process.env.PORT;
+//var port = 8080;
+var port = process.env.PORT;
 var msg_device, msg1_chaud, msg1_froid, msg2, msg3, msg4, msg5;
 msg1_chaud = "C'est chaud. ";
 msg1_froid = "Ce n'est pas chaud, continuez votre misérable vie.";
