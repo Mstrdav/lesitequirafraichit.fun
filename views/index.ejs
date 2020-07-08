@@ -1,37 +1,32 @@
 <!DOCTYPE html>
 <html>
-    <head>    
-        <title>Le Site Qui Rafraichit</title>
-        <meta charset="utf-8"/>
-        <!--
-            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-            <script>
-                (adsbygoogle = window.adsbygoogle || []).push({
-                    google_ad_client: "ca-pub-  5754166199689197",
-                    enable_page_level_ads: true
-                });
-            </script>
-        -->
-    </head>
-    <body style="width:auto;
+
+<head>
+    <title>Le Site Qui Rafraichit</title>
+    <meta charset="utf-8" />
+    <script data-ad-client="ca-pub-5754166199689197" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+</head>
+
+<body style="width:auto;
     height:auto;
     background:rgb(<%= rouge %> <%= vert %> <%= bleu %>);">
-        <div style="margin-top: 15%;
+    <div style="margin-top: 15%;
     text-align: center;
     font-size: 200px;">
-            <%= weather %>°C
-        </div>
-        <p style="text-align: center;
+        <%= weather %>°C
+    </div>
+    <p style="text-align: center;
     font-size: 30px;
     margin:0;">
-            <% if(town!=undefined && town!='') { %>
-                <%= town %>
-            <% } %>
-            <%= string1 %></p>
-        <p style="text-align: center;
+        <% if(town!=undefined && town!='') { %>
+        <%= town %>
+        <% } %>
+        <%= string1 %></p>
+    <p style="text-align: center;
     font-size: 30px;
     margin:0;">
-            <%= string2 %>
-        </p>
-    </body>
+        <%= string2 %>
+    </p>
+</body>
+
 </html>
